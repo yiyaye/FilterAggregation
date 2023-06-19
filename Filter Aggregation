@@ -1,0 +1,44 @@
+Filter Aggregation关键字: 指具体的域和具体的值，可以在Terms Aggregation 的基础上进行了过滤，只对特定的值进行了聚合
+#过滤获取品牌为BMW的桶，并求该桶平均值
+GET /cars/cars/_search
+{
+  "aggs": {
+    "car_brands": {
+      "filter": {
+        "term": {
+          "brand": "BMW"
+        }
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+Filters Aggregation关键字: Filter Aggregation 只能指定一个过滤条件，响应也只是单个桶。如果要对特定多个值进行聚合，使用Filters Aggragation
+#过滤获取品牌为BMW的或color为绿色的桶
+GET /cars/cars/_search
+{
+  "aggs": {
+    "cars": {
+      "filters": {
+        "filters": {
+          "colorBucket":{
+            "match":{
+              "color":"red"
+            }
+          },
+          "brandBucket":{
+            "match":{
+              "brand":"Audi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
